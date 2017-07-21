@@ -1,0 +1,25 @@
+---
+- block:
+  - name: If not overwrite | Ensure "{{ images_dir }}/{{ instance_id }}.qcow2" does not exist
+    stat:
+      path: "{{ images_dir }}/{{ instance_id }}.qcow2"
+    register: st
+  - fail:
+      msg: "{{ images_dir }}/{{ instance_id }}.qcow2 already exists"
+    when: st.stat.isdir is defined
+  when: not (overwrite|default(false)|bool)
+
+- name: "If overwrite | Delete {{ images_dir }}/{{ instance_id }}.qcow2"
+  file:
+    path: "{{ images_dir }}/{{ instance_id }}.qcow2"
+    state: absent
+  when: overwrite|default(false)|bool
+
+- name: Clone template storage
+  copy:
+    remote_src: true
+    src: "{{ templates_dir }}/centos7-noswap.qcow2"
+    dest: "{{ images_dir }}/{{ instance_id }}.qcow2"
+    owner: qemu
+    group: wheel
+    mode: 0600

@@ -1,0 +1,7 @@
+[vm:vars]
+ansible_host=172.16.91.2
+ssh_pub_keys=['ssh-rsa ....']
+
+[vm]
+vm1 ip_suffix=105
+vm2 ip_suffix=106

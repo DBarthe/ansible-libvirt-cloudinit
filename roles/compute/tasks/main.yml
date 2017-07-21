@@ -1,0 +1,11 @@
+---
+- name: Define the domain with XML specification
+  virt:
+    name: "{{ instance_id }}"
+    command: define
+    xml: "{{ lookup('template', 'spec.xml.j2') }}"
+
+- name: Start the vm after definition
+  virt:
+    name: "{{ instance_id }}"
+    state: running

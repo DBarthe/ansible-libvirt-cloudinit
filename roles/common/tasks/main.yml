@@ -1,0 +1,22 @@
+---
+- name: List existing vms
+  virt:
+    command: list_vms
+  register: listing
+
+- fail:
+    msg: "instance {{ instance_id }} already exists"
+  when:
+    - instance_id in listing.list_vms
+    - not (overwrite|default(false)|bool)
+
+- name: If overwrite | Delete existing instance
+  virt:
+    name: "{{ instance_id }}"
+    command: "{{ item }}"
+  with_items:
+    - destroy
+    - undefine
+  when:
+    - instance_id in listing.list_vms
+    - overwrite|default(false)|bool

@@ -1,0 +1,16 @@
+---
+# variables
+hostname: "{{ inventory_hostname }}"
+instance_id: "{{ hostname }}"
+fqdn: "{{ hostname }}.localdomain"
+ssh_pub_keys: []
+memory: 1024
+cpu: 1
+
+# constants
+base_dir: /var/lib/libvirt/managed
+cloud_init_dir: "{{ base_dir }}/cloud_init"
+cloud_init_src_dir: "{{ cloud_init_dir }}/src/{{ instance_id }}"
+cloud_init_iso_dir: "{{ cloud_init_dir }}/iso"
+templates_dir:  "{{ base_dir }}/templates"
+images_dir: "{{ base_dir }}/images"

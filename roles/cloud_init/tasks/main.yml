@@ -1,0 +1,40 @@
+---
+- block:
+  - name: If not overwrite | Ensure {{ cloud_init_src_dir }} does not exist
+    stat:
+      path: "{{ cloud_init_src_dir }}"
+    register: st
+  - fail:
+      msg: "{{ cloud_init_src_dir }} already exists"
+    when: st.stat.isdir is defined
+  when: not (overwrite|default(false)|bool)
+
+- name: If overwrite | Delete {{ cloud_init_src_dir }}
+  file:
+    path: "{{ cloud_init_src_dir }}"
+    state: absent
+  when: overwrite|default(false)|bool
+
+- name: "Create directory {{ cloud_init_src_dir }}"
+  file:
+    path: "{{ cloud_init_src_dir }}"
+    state: directory
+
+- name: "Create log file {{ cloud_init_src_dir }}/logs"
+  file:
+    path: "{{ cloud_init_src_dir }}/logs"
+    state: touch
+
+- name: Create cloud-init config
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ cloud_init_src_dir }}/{{ item.dest }}"
+  with_items:
+    - { src: user-data.yml.j2, dest: user-data }
+    - { src: meta-data.yml.j2, dest: meta-data }
+
+- name: Create CD-ROM ISO with cloud-init config
+  shell: |
+    genisoimage -output {{ cloud_init_iso_dir }}/{{ instance_id }}.iso -volid cidata -joliet \
+                -r {{ cloud_init_src_dir }}/user-data {{ cloud_init_src_dir }}/meta-data  &>> "{{ cloud_init_src_dir }}/logs"
+    chown qemu:wheel {{ cloud_init_iso_dir }}/{{ instance_id }}.iso

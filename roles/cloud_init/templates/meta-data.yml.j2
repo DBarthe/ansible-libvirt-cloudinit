@@ -1,0 +1,18 @@
+dsmode: local
+instance-id: {{ instance_id }}
+local-hostname: {{ hostname }}
+network-interfaces: |
+    auto eth0
+    iface eth0 inet static
+        address 172.16.91.{{ ip_suffix }}
+        network 172.16.91.0
+        netmask 255.255.255.0
+        broadcast 255.255.255.255
+        gateway 172.16.91.2
+        dns-nameservers 46.29.122.5 37.235.95.131
+    auto eth1
+    iface eth1 ineat static
+        address 10.12.213.{{ ip_suffix }}
+        network 10.12.213.0
+        netmask 255.255.255.0
+        broadcast 10.12.213.255
