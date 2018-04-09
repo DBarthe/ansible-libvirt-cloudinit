@@ -23,3 +23,11 @@
     owner: qemu
     group: wheel
     mode: 0600
+
+- name: Extend disk image
+  shell: |
+    virsh --connect qemu:///system vol-resize "{{ images_dir }}/{{ instance_id }}.qcow2" "{{ disk_size }}"
+    virsh --connect qemu:///system pool-refresh managed_images
+    /sbin/xfs_growfs "{{ images_dir }}/{{ instance_id }}.qcow2"
+
+

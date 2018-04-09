@@ -6,6 +6,7 @@ fqdn: "{{ hostname }}.localdomain"
 ssh_pub_keys: []
 memory: 1024
 cpu: 1
+disk_size: 30G
 
 # constants
 base_dir: /var/lib/libvirt/managed
